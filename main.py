@@ -1,32 +1,32 @@
 from sys import argv, exit
-from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QPainter, QColor
-import random
+from random import randint
+from ui import Ui_MainWindow
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui.ui', self)
+        self.setupUi(self)
         self.createbutton.clicked.connect(self.createEvent)
         self.flag = False
         self.c = []
 
     def createEvent(self):
-        d = random.randint(10, min(self.width(), self.height()) // 2)
-        x = random.randint(0, self.width() - d)
-        y = random.randint(0, self.height() - d)
-        self.c.append([x, y, d, d])
+        d = randint(10, min(self.width(), self.height()) // 2)
+        x = randint(0, self.width() - d)
+        y = randint(0, self.height() - d)
+        self.c.append((QColor(randint(0, 255), randint(0, 255), randint(0, 255)), [x, y, d, d]))
         self.flag = True
         self.update()
 
     def paintEvent(self, event):
         if self.flag:
             painter = QPainter(self)
-            painter.setBrush(QColor(255, 255, 0))
             for circle in self.c:
-                painter.drawEllipse(*circle)
+                painter.setBrush(circle[0])
+                painter.drawEllipse(*circle[1])
 
 
 if __name__ == '__main__':
